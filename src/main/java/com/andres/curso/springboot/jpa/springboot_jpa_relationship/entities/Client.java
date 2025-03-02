@@ -18,7 +18,8 @@ public class Client {
 
     private String lastName;
 
-    public Client() {}
+    public Client() {
+    }
 
     public Client(String name, String lastName) {
         this.name = name;
@@ -47,6 +48,11 @@ public class Client {
 
     public void setLastName(String lastName) {
         this.lastName = lastName;
+    }
+
+    @Override
+    public String toString() {
+        return "Client [id=" + id + ", name=" + name + ", lastName=" + lastName + "]";
     }
 
 }
