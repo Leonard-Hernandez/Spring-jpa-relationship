@@ -29,6 +29,11 @@ public class Invoice {
         this.total = total;
     }
 
+    public Invoice(String description, Long total, Client client) {
+        this(description, total);
+        this.client = client;
+    }
+
     public Long getId() {
         return id;
     }
@@ -51,6 +56,14 @@ public class Invoice {
 
     public void setTotal(Long total) {
         this.total = total;
+    }
+
+    public Client getClient() {
+        return client;
+    }
+
+    public void setClient(Client client) {
+        this.client = client;
     }
 
     @Override
