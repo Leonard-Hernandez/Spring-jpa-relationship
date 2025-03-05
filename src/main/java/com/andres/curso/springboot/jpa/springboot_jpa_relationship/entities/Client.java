@@ -30,6 +30,7 @@ public class Client {
     }
 
     public Client(String name, String lastName) {
+        this();
         this.name = name;
         this.lastName = lastName;
     }

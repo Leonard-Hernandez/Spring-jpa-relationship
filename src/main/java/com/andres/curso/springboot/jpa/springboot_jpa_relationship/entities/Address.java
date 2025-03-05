@@ -19,8 +19,7 @@ public class Address {
 
     public Address() {}
 
-    public Address(Long id, String street, Integer number) {
-        this.id = id;
+    public Address(String street, Integer number) {
         this.street = street;
         this.number = number;
     }
