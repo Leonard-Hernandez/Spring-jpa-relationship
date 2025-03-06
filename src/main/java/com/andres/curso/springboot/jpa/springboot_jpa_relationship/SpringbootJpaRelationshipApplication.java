@@ -1,7 +1,6 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship;
 
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -54,7 +53,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	@Transactional
 	public void removeAddress(){
 
-		Optional<Client> clientOptional = clientRepository.findById(6L);
+		Optional<Client> clientOptional = clientRepository.findOne(6L);
 
 		clientOptional.ifPresentOrElse(c -> {
 			c.getAddresses().remove(0);

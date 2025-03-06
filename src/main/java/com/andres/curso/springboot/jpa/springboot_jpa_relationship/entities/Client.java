@@ -1,5 +1,6 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities;
 
+import java.util.ArrayList;
 import java.util.List;
 
 import jakarta.persistence.CascadeType;
@@ -25,15 +26,18 @@ public class Client {
 
     private String lastName;
 
-    //@JoinColumn(name = "client_id")
+    // @JoinColumn(name = "client_id")
     @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinTable(name ="tbl_clientes_to_direcciones", joinColumns = @JoinColumn(name = "id_cliente"),
-    inverseJoinColumns = @JoinColumn(name = "id_direccion"),
-    uniqueConstraints = @UniqueConstraint(columnNames = {"id_direccion"}))
+    @JoinTable(name = "tbl_clientes_to_direcciones", joinColumns = @JoinColumn(name = "id_cliente"), inverseJoinColumns = @JoinColumn(name = "id_direccion"), uniqueConstraints = @UniqueConstraint(columnNames = {
+            "id_direccion" }))
     private List<Address> addresses;
 
+    @OneToMany(cascade = CascadeType.ALL, orphanRemoval = true, mappedBy = "client")
+    private List<Invoice> invoices;
+
     public Client() {
-        addresses = new java.util.ArrayList<>();
+        addresses = new ArrayList<>();
+        invoices = new ArrayList<>();
     }
 
     public Client(String name, String lastName) {
@@ -74,9 +78,16 @@ public class Client {
         this.addresses = addresses;
     }
 
-    @Override
-    public String toString() {
-        return "{id=" + id + ", name=" + name + ", lastName=" + lastName + ", addresses=" + addresses + "}";
+    public List<Invoice> getInvoices() {
+        return invoices;
     }
 
+    public void setInvoices(List<Invoice> invoices) {
+        this.invoices = invoices;
+    }
+
+    @Override
+    public String toString() {
+        return "{id=" + id + ", name=" + name + ", lastName=" + lastName + ", addresses=" + addresses + ", invoices=" + invoices + "}";
+    }
 }
