@@ -1,6 +1,8 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship;
 
+import java.util.ArrayList;
 import java.util.Arrays;
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -14,6 +16,7 @@ import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Invo
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
 
+import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 
 @SpringBootApplication
@@ -30,7 +33,29 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeAddress();
+		oneToManyInvoiceBidirectional();
+	}
+
+	@Transactional
+	public void oneToManyInvoiceBidirectional(){
+
+		Client client = new Client("Leonard2","Hernandez2");
+
+		Invoice invoice1 = new Invoice("Factura 1", 1000L);
+		Invoice invoice2 = new Invoice("Factura 2", 2000L);
+
+		List<Invoice> invoices = new ArrayList<>();
+		invoices.add(invoice1);
+		invoices.add(invoice2);
+
+		client.setInvoices(invoices);
+		invoice1.setClient(client);
+		invoice2.setClient(client);
+
+		Client savedClient = clientRepository.save(client);
+
+		System.out.println(savedClient);
+	
 	}
 
 	@Transactional
