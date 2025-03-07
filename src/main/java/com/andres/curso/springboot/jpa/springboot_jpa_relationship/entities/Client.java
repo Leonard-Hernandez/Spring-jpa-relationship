@@ -86,6 +86,17 @@ public class Client {
         this.invoices = invoices;
     }
 
+    public Client addAddress(Address address) {
+        this.addresses.add(address);
+        return this;
+    }
+
+    public Client addInvoice(Invoice invoice) {
+        this.invoices.add(invoice);
+        invoice.setClient(this);
+        return this;
+    }
+
     @Override
     public String toString() {
         return "{id=" + id + ", name=" + name + ", lastName=" + lastName + ", addresses=" + addresses + ", invoices=" + invoices + "}";

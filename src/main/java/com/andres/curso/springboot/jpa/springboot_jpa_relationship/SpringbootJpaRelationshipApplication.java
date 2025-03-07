@@ -1,8 +1,6 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship;
 
-import java.util.ArrayList;
 import java.util.Arrays;
-import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -16,7 +14,6 @@ import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Invo
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
 
-import jakarta.persistence.criteria.CriteriaBuilder.In;
 import jakarta.transaction.Transactional;
 
 @SpringBootApplication
@@ -37,35 +34,32 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	}
 
 	@Transactional
-	public void oneToManyInvoiceBidirectional(){
+	public void oneToManyInvoiceBidirectional() {
 
-		Client client = new Client("Leonard2","Hernandez2");
+		Client client = new Client("Leonard2", "Hernandez2");
 
 		Invoice invoice1 = new Invoice("Factura 1", 1000L);
 		Invoice invoice2 = new Invoice("Factura 2", 2000L);
 
-		List<Invoice> invoices = new ArrayList<>();
-		invoices.add(invoice1);
-		invoices.add(invoice2);
+		client.addInvoice(invoice1).addInvoice(invoice2);
 
-		client.setInvoices(invoices);
 		invoice1.setClient(client);
 		invoice2.setClient(client);
 
 		Client savedClient = clientRepository.save(client);
 
 		System.out.println(savedClient);
-	
+
 	}
 
 	@Transactional
-	public void oneToMany(){
+	public void oneToMany() {
 
-		Client client = new Client("Leonard2","Hernandez2");
+		Client client = new Client("Leonard2", "Hernandez2");
 
 		Address address1 = new Address("Calle 1", 1);
 		Address address2 = new Address("Calle 2", 2);
-		
+
 		client.getAddresses().add(address1);
 		client.getAddresses().add(address2);
 
@@ -76,7 +70,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	}
 
 	@Transactional
-	public void removeAddress(){
+	public void removeAddress() {
 
 		Optional<Client> clientOptional = clientRepository.findOne(6L);
 
@@ -87,14 +81,14 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			System.out.println(savedClient2);
 
 		},
-		() -> {
-			System.out.println("Client not found");
-		});
+				() -> {
+					System.out.println("Client not found");
+				});
 
 	}
 
 	@Transactional
-	public void oneToManyFindById(){
+	public void oneToManyFindById() {
 
 		Optional<Client> client = clientRepository.findById(2L);
 
@@ -103,14 +97,14 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			Address address2 = new Address("Calle 2", 2);
 
 			c.setAddresses(Arrays.asList(address1, address2));
-	
+
 			Client savedClient = clientRepository.save(c);
-	
+
 			System.out.println(savedClient);
 		},
-		() -> {
-			System.out.println("Client not found");
-		});
+				() -> {
+					System.out.println("Client not found");
+				});
 
 	}
 
@@ -141,9 +135,9 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			return;
 
 		},
-		() -> {
-			System.out.println("Client not found");
-		});
+				() -> {
+					System.out.println("Client not found");
+				});
 
 	}
 
