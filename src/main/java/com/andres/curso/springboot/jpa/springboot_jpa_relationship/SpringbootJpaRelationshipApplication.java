@@ -30,7 +30,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyInvoiceBidirectional();
+		oneToManyInvoiceBidirectionalFindById();
 	}
 
 	@Transactional
@@ -49,6 +49,29 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		Client savedClient = clientRepository.save(client);
 
 		System.out.println(savedClient);
+
+	}
+
+	@Transactional
+	public void oneToManyInvoiceBidirectionalFindById() {
+
+		Optional<Client> optionalClient = clientRepository.findOnWithInvoice(1L);
+
+		optionalClient.ifPresentOrElse(client -> {
+			Invoice invoice1 = new Invoice("Factura 1", 1000L);
+			Invoice invoice2 = new Invoice("Factura 2", 2000L);
+
+			client.addInvoice(invoice1).addInvoice(invoice2);
+
+			invoice1.setClient(client);
+			invoice2.setClient(client);
+
+			Client savedClient = clientRepository.save(client);
+
+			System.out.println(savedClient);
+		}, () -> {
+			System.out.println("Client not found");
+		});
 
 	}
 
@@ -72,7 +95,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	@Transactional
 	public void removeAddress() {
 
-		Optional<Client> clientOptional = clientRepository.findOne(6L);
+		Optional<Client> clientOptional = clientRepository.findWithAll(6L);
 
 		clientOptional.ifPresentOrElse(c -> {
 			c.getAddresses().remove(0);
@@ -96,7 +119,8 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			Address address1 = new Address("Calle 1", 1);
 			Address address2 = new Address("Calle 2", 2);
 
-			c.setAddresses(Arrays.asList(address1, address2));
+			c.getAddresses().add(address1);
+			c.getAddresses().add(address2);
 
 			Client savedClient = clientRepository.save(c);
 
