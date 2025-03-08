@@ -1,6 +1,5 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship;
 
-import java.util.Arrays;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -30,7 +29,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToManyInvoiceBidirectionalFindById();
+		removeInvoiceBidirectionalFindById();
 	}
 
 	@Transactional
@@ -69,6 +68,34 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 			Client savedClient = clientRepository.save(client);
 
 			System.out.println(savedClient);
+		}, () -> {
+			System.out.println("Client not found");
+		});
+
+	}
+
+	@Transactional
+	public void removeInvoiceBidirectionalFindById() {
+
+		Optional<Client> optionalClientDB = clientRepository.findWithAll(8L);
+
+		optionalClientDB.ifPresentOrElse(client -> {
+
+			Optional<Invoice> optionalInvoice = invoiceRepository.findById(9L);
+
+			optionalInvoice.ifPresentOrElse(invoice -> {
+
+				client.removeInvoice(invoice);
+				client.getInvoices().remove(invoice);
+				invoice.setClient(null);
+
+				Client savedClient = clientRepository.save(client);
+
+				System.out.println(savedClient);
+			}, () -> {
+				System.out.println("Invoice not found");
+			});
+
 		}, () -> {
 			System.out.println("Client not found");
 		});
