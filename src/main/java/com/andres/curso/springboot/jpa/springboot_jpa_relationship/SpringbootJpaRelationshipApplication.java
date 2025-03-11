@@ -29,7 +29,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeInvoiceBidirectionalFindById();
+		removeInvoiceBidirectional();
 	}
 
 	@Transactional
@@ -71,6 +71,34 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		}, () -> {
 			System.out.println("Client not found");
 		});
+
+	}
+
+	@Transactional
+	public void removeInvoiceBidirectional() {
+
+		Client client = new Client("Andres", "Guzman");
+
+		Invoice invoice1 = new Invoice("Factura 1", 1000L);
+		Invoice invoice2 = new Invoice("Factura 2", 2000L);
+
+		client.addInvoice(invoice1).addInvoice(invoice2);
+
+		Client savedClient = clientRepository.save(client);
+
+		System.out.println(savedClient);
+
+		Optional<Client> optionalClient = clientRepository.findWithAll(savedClient.getId());
+
+		optionalClient.ifPresentOrElse(client2 -> {
+
+			client2.removeInvoice(invoice1);
+			System.out.println(clientRepository.save(client2)); 
+
+		}, () -> {
+			System.out.println("Client not found");
+		});
+
 
 	}
 
