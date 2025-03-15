@@ -9,9 +9,11 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Address;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Client;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.ClientDetails;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientDetailsRepository;
 
 import jakarta.transaction.Transactional;
 
@@ -22,6 +24,8 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	private ClientRepository clientRepository;
 	@Autowired
 	private InvoiceRepository invoiceRepository;
+	@Autowired
+	private ClientDetailsRepository clientDetailsRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaRelationshipApplication.class, args);
@@ -29,7 +33,19 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		removeInvoiceBidirectional();
+		oneToOne();
+	}
+
+	@Transactional
+	public void oneToOne() {
+
+		Client client = new Client("juan", "carlo");
+		ClientDetails clientDetails = new ClientDetails(true, 5000);
+		client.setClientDetails(clientDetails);
+		Client savedClient = clientRepository.save(client);
+
+		System.out.println(savedClient);
+
 	}
 
 	@Transactional
@@ -93,12 +109,11 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		optionalClient.ifPresentOrElse(client2 -> {
 
 			client2.removeInvoice(invoice1);
-			System.out.println(clientRepository.save(client2)); 
+			System.out.println(clientRepository.save(client2));
 
 		}, () -> {
 			System.out.println("Client not found");
 		});
-
 
 	}
 
