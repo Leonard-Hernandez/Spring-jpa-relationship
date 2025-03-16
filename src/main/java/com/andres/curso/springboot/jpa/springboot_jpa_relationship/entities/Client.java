@@ -37,7 +37,6 @@ public class Client {
     private Set<Invoice> invoices;
 
     @OneToOne(cascade = CascadeType.ALL, orphanRemoval = true)
-    @JoinColumn(name = "client_details_id")
     private ClientDetails clientDetails;
 
     public Client() {
@@ -113,6 +112,14 @@ public class Client {
 
     public void setClientDetails(ClientDetails clientDetails) {
         this.clientDetails = clientDetails;
+        clientDetails.setClient(this);
+    }
+
+    public void removeClientDetails() {
+        if (this.clientDetails != null) {
+            this.clientDetails.setClient(null);
+            this.clientDetails = null;
+        }
     }
 
     @Override

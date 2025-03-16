@@ -33,7 +33,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOneFindById();
+		oneToOnebidirectionalFindByid();
 	}
 
 	@Transactional
@@ -45,6 +45,37 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		Client savedClient = clientRepository.save(client);
 
 		System.out.println(savedClient);
+
+	}
+
+	@Transactional
+	public void oneToOnebidirectional() {
+
+		Client client = new Client("juan", "carlo");
+		ClientDetails clientDetails = new ClientDetails(true, 5000);
+		client.setClientDetails(clientDetails);
+		Client savedClient = clientRepository.save(client);
+
+		System.out.println(savedClient);
+
+	}
+
+	@Transactional
+	public void oneToOnebidirectionalFindByid() {
+
+		Optional<Client> optionalClient = clientRepository.findWithAll(2L);
+
+		optionalClient.ifPresentOrElse(c -> {
+			ClientDetails clientDetails = new ClientDetails(true, 5400);
+			c.setClientDetails(clientDetails);
+			Client savedClient = clientRepository.save(c);
+
+			System.out.println(savedClient);
+
+		},
+				() -> {
+					System.out.println("Client not found");
+				});
 
 	}
 
@@ -184,6 +215,7 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	}
 
+	@SuppressWarnings("unlikely-arg-type")
 	@Transactional
 	public void removeAddress() {
 
