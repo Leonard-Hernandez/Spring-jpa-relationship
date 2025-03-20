@@ -1,5 +1,6 @@
 package com.andres.curso.springboot.jpa.springboot_jpa_relationship;
 
+import java.util.List;
 import java.util.Optional;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +11,12 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Address;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Client;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.ClientDetails;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Course;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Student;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.StudentRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientDetailsRepository;
 
 import jakarta.transaction.Transactional;
@@ -26,6 +30,8 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	private InvoiceRepository invoiceRepository;
 	@Autowired
 	private ClientDetailsRepository clientDetailsRepository;
+	@Autowired
+	private StudentRepository studentRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaRelationshipApplication.class, args);
@@ -33,7 +39,25 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		oneToOnebidirectionalFindByid();
+		manyToMany();
+	}
+
+	@Transactional
+	public void manyToMany(){
+
+		Student student = new Student("Andres", "Guzman");
+		Student student2 = new Student("leonard", "hernandez");
+
+		Course course = new Course("Java 2025", "Andres");
+		Course course2 = new Course("spring 2026", "leonard");
+
+		student.addCourse(course);
+		student.addCourse(course2);
+
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student, student2)).forEach(System.out::println);
+		
 	}
 
 	@Transactional
