@@ -8,8 +8,11 @@ import jakarta.persistence.Entity;
 import jakarta.persistence.GeneratedValue;
 import jakarta.persistence.GenerationType;
 import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.JoinTable;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import jakarta.persistence.UniqueConstraint;
 
 @Entity
 @Table(name = "students")
@@ -24,12 +27,16 @@ public class Student {
     private String lastName;
 
     @ManyToMany(cascade = { CascadeType.PERSIST, CascadeType.MERGE })
+    @JoinTable(name = "tbl_students_to_courses", 
+                joinColumns = @JoinColumn(name = "id_student"), 
+                inverseJoinColumns = @JoinColumn(name = "id_course"),
+                uniqueConstraints = @UniqueConstraint(columnNames = { "id_student", "id_course" }))
     private Set<Course> courses;
 
     public Student() {
         courses = new HashSet<>();
-    } 
-    
+    }
+
     public Student(String name, String lastName) {
         this();
         this.name = name;
@@ -38,7 +45,7 @@ public class Student {
 
     public Long getId() {
         return id;
-    }    
+    }
 
     public void setId(Long id) {
         this.id = id;
