@@ -15,6 +15,7 @@ import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Cour
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Invoice;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.entities.Student;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientRepository;
+import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.CourseRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.InvoiceRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.StudentRepository;
 import com.andres.curso.springboot.jpa.springboot_jpa_relationship.repositories.ClientDetailsRepository;
@@ -32,6 +33,8 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	private ClientDetailsRepository clientDetailsRepository;
 	@Autowired
 	private StudentRepository studentRepository;
+	@Autowired
+	private CourseRepository courseRepository;
 
 	public static void main(String[] args) {
 		SpringApplication.run(SpringbootJpaRelationshipApplication.class, args);
@@ -39,17 +42,17 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 
 	@Override
 	public void run(String... args) throws Exception {
-		manyToMany();
+		manyToManyRemoveFind();
 	}
 
 	@Transactional
-	public void manyToMany(){
+	public void manyToMany() {
 
 		Student student = new Student("Andres", "Guzman");
 		Student student2 = new Student("leonard", "hernandez");
 
-		Course course = new Course("Java 2025", "Andres");
-		Course course2 = new Course("spring 2026", "leonard");
+		Course course = courseRepository.findById(16L).get();
+		Course course2 = courseRepository.findById(17L).get();
 
 		student.addCourse(course);
 		student.addCourse(course2);
@@ -57,7 +60,58 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 		student2.addCourse(course2);
 
 		studentRepository.saveAll(List.of(student, student2)).forEach(System.out::println);
-		
+
+	}
+
+	@Transactional
+	public void manyToManyFind() {
+
+		Student student = studentRepository.findById(6L).get();
+		Student student2 = studentRepository.findById(7L).get();
+
+		Course course = courseRepository.findById(16L).get();
+		Course course2 = courseRepository.findById(17L).get();
+
+		student.addCourse(course);
+		student.addCourse(course2);
+
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student, student2)).forEach(System.out::println);
+
+	}
+
+	@Transactional
+	public void manyToManyRemoveFind() {
+
+		Student student = studentRepository.findById(6L).get();
+		Student student2 = studentRepository.findById(7L).get();
+
+		Course course = courseRepository.findById(16L).get();
+		Course course2 = courseRepository.findById(17L).get();
+
+		student.addCourse(course);
+		student.addCourse(course2);
+
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student, student2)).forEach(System.out::println);
+
+		Optional<Student> optionalStudent = studentRepository.findWithAll(1L);
+		if (optionalStudent.isPresent()) {
+
+			Student studentDB = optionalStudent.get();
+			Optional<Course> optionalCourse = courseRepository.findById(13L);
+
+			if (optionalCourse.isPresent()) {
+
+				studentDB.getCourses().remove(optionalCourse.get());
+
+				System.out.println(studentDB);
+			}
+
+		}
+
 	}
 
 	@Transactional
