@@ -46,6 +46,24 @@ public class SpringbootJpaRelationshipApplication implements CommandLineRunner {
 	}
 
 	@Transactional
+	public void manyToManyBidirectional() {
+
+		Student student = new Student("Andres", "Guzman");
+		Student student2 = new Student("leonard", "hernandez");
+
+		Course course = courseRepository.findById(16L).get();
+		Course course2 = courseRepository.findById(17L).get();
+
+		student.addCourse(course);
+		student.addCourse(course2);
+
+		student2.addCourse(course2);
+
+		studentRepository.saveAll(List.of(student, student2)).forEach(System.out::println);
+
+	}
+
+	@Transactional
 	public void manyToMany() {
 
 		Student student = new Student("Andres", "Guzman");
